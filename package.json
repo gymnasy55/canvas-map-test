@@ -2,11 +2,14 @@
   "name": "canvas-map-test",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "dev": "nx serve client"
+  },
   "private": true,
   "dependencies": {
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-tile-map": "^0.3.5",
     "tslib": "^2.3.0"
   },
   "devDependencies": {

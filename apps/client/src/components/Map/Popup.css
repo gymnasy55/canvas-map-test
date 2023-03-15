@@ -1,0 +1,28 @@
+.AtlasPopup {
+  position: absolute;
+  z-index: 100;
+  padding: 20px;
+  background: black;
+  margin-left: -320px;
+  margin-top: -60px;
+  max-width: 280px;
+  transition: opacity 0.2s ease, top 0.2s ease, left 0.2s ease,
+  margin-left 0.2s ease;
+  border-radius: 8px;
+  user-select: none;
+  pointer-events: none;
+  text-align: left;
+  color: white;
+}
+
+.AtlasPopup.right {
+  margin-left: 40px;
+}
+
+.AtlasPopup.no-owner .owner {
+  display: none;
+}
+
+.AtlasPopup.no-owner .land-name {
+  margin-bottom: 0px;
+}
