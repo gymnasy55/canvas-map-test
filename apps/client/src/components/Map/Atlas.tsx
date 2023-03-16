@@ -77,7 +77,7 @@ export class Atlas extends React.PureComponent<AtlasProps, AtlasState> {
 
   componentDidMount(): void {
     if (!this.state.tiles) {
-      fetchTiles().then(this.handleUpdateTiles);
+      fetchTiles(10).then(this.handleUpdateTiles);
     }
     this.mounted = true;
   }

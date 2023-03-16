@@ -7,7 +7,7 @@ export const App: React.FC = () => {
   const [tiles, setTiles] = useState<Record<string, AtlasTile>>({});
 
   useEffect(() => {
-    fetchTiles().then(setTiles);
+    fetchTiles(10).then(setTiles);
   }, []);
 
   const [selection, setSelection] = useState<string[]>([]);

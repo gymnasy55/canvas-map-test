@@ -5,8 +5,6 @@ type Item = {
   type: `${number}`;
   x: number;
   y: number;
-  top: number;
-  left: number;
   owner: `0x${string}`;
   estate_id: `${number}`;
 };
@@ -43,11 +41,13 @@ export class AppService {
         data[`${j},${i}`] = {
           x: j,
           y: i,
-          top: 1,
-          left: 1,
           owner: addressExp.gen() as `0x${string}`,
-          type: rand(12 + 1, 0).toFixed(0) as `${number}`,
-          estate_id: rand().toFixed() as `${number}`,
+          type: (i === 0 || j === 0 || i === size - 1 || j === size - 1
+            ? '7'
+            : (i + 1) % 2 === 0 && (j + 1) % 2 === 0
+            ? '8'
+            : '9') as `${number}`,
+          estate_id: rand(10000).toFixed() as `${number}`,
         };
       }
     }
