@@ -8,18 +8,18 @@ import React, {
 import { Atlas, AtlasProps, AtlasTile } from './Atlas';
 import { Layer } from 'react-tile-map/lib';
 import { Popup } from './Popup';
+import { getCoords } from '../../helpers/getCoords';
 
 export type Tile = AtlasTile & { owner?: string; name?: string };
 
-const getCoords = (x: number | string, y: number | string) => `${x},${y}`;
-
 export type MapProps = Partial<AtlasProps> & {
-  selection?: { x: number | string; y: number | string }[];
+  selection: string[];
+  setSelection: (v: string[]) => void;
   tiles: Record<string, AtlasTile>;
 };
 
 export const Map: React.FC<MapProps> = (props) => {
-  const { tiles } = props;
+  const { tiles, selection, setSelection } = props;
 
   const [showPopup, setShowPopup] = useState(false);
   const [hoveredTile, setHoveredTile] = useState<Tile | null>(null);
@@ -28,19 +28,15 @@ export const Map: React.FC<MapProps> = (props) => {
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
   const timeout = useRef<NodeJS.Timer | null>(null);
-
-  const selection = useMemo(
-    () =>
-      (props.selection || []).reduce(
-        (set, pair) => set.add(getCoords(pair.x, pair.y)),
-        new Set<string>(),
-      ),
-    [props.selection],
-  );
+  const size = useMemo(() => {
+    const size = +Math.sqrt(Object.keys(tiles).length).toFixed(0);
+    console.log(size);
+    return size;
+  }, [tiles]);
 
   const isSelected = useCallback(
     (x: number, y: number) => {
-      if (selection.has(getCoords(x, y))) return true;
+      if (selection.find((s) => s === getCoords(x, y))) return true;
 
       if (!tiles) return false;
 
@@ -67,12 +63,29 @@ export const Map: React.FC<MapProps> = (props) => {
     [isSelected],
   );
 
+  const handleClick = useCallback(
+    (x: number, y: number) => {
+      const tile = tiles[getCoords(x, y)] as Tile;
+      if (!tile) {
+        return;
+      }
+      if (isSelected(x, y)) {
+        setSelection(selection.filter((s) => s !== getCoords(x, y)));
+      } else {
+        setSelection([...selection, getCoords(x, y)]);
+      }
+    },
+    [tiles, selection],
+  );
+
   const handleHover = useCallback(
     (x: number, y: number) => {
-      if (selection.has(getCoords(x, y))) {
+      if (selection.find((s) => s === getCoords(x, y))) {
         setShowPopup(false);
         return;
       }
+
+      // console.log(x, y);
 
       const id = getCoords(x, y);
       const tile = tiles[id];
@@ -99,6 +112,16 @@ export const Map: React.FC<MapProps> = (props) => {
     setMouseY(-1);
   }, []);
 
+  // fade effect
+  useEffect(() => {
+    if (!showPopup) {
+      timeout.current = setTimeout(() => setHoveredTile(null), 250);
+    } else if (timeout.current) {
+      clearTimeout(timeout.current);
+      timeout.current = null;
+    }
+  }, [showPopup]);
+
   useEffect(() => {
     function handleMouseMove(event: MouseEvent) {
       if (showPopup && mouseX === -1 && mouseY === -1) {
@@ -121,8 +144,25 @@ export const Map: React.FC<MapProps> = (props) => {
   ];
 
   return (
-    <div className="atlas-wrapper" onMouseLeave={handleHidePopup}>
-      <Atlas {...props} tiles={tiles} onHover={handleHover} layers={layers} />
+    <div
+      className="atlas-wrapper"
+      onMouseLeave={handleHidePopup}
+      style={{ width: `${props.width}px`, height: `${props.height}px` }}
+    >
+      <Atlas
+        {...props}
+        tiles={tiles}
+        onHover={handleHover}
+        onClick={handleClick}
+        layers={layers}
+        x={size / 2}
+        y={size / 2}
+        minX={0}
+        maxX={size}
+        minY={0}
+        maxY={size}
+        zoom={2}
+      />
       {hoveredTile ? (
         <Popup
           x={x}

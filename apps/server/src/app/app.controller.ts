@@ -2,7 +2,7 @@ import { Controller, Get, HttpCode, Query } from '@nestjs/common';
 
 import { AppService } from './app.service';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import generatedData from './data.json';
+import generatedData from './data_200x200.json';
 
 export const ok = <T>(data: T) => ({ ok: true, data });
 

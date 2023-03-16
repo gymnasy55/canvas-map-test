@@ -1,8 +1,7 @@
 import { AtlasTile } from '../components/Map/Atlas';
+import { environment } from '../environments/environment';
 
-export const fetchTiles = async (
-  url = 'https://api.decentraland.org/v1/tiles',
-) => {
+export const fetchTiles = async (url = `${environment.serverUrl}/data`) => {
   if (!window.fetch) return {};
   const resp = await window.fetch(url);
   const json = await resp.json();

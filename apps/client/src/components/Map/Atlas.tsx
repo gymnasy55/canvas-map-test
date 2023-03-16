@@ -2,6 +2,7 @@ import React from 'react';
 import { TileMapProps, Layer, TileMap, Coord } from 'react-tile-map/lib';
 import 'react-tile-map/lib/styles.css';
 import { fetchTiles } from '../../helpers/fetchTiles';
+import { getCoords } from '../../helpers/getCoords';
 
 export type AtlasTile = {
   x: number;
@@ -58,7 +59,7 @@ export class Atlas extends React.PureComponent<AtlasProps, AtlasState> {
 
   layer: Layer = (x, y) => {
     const { tiles } = this.state;
-    const id = x + ',' + y;
+    const id = getCoords(x, y);
     if (tiles && id in tiles) {
       const tile = tiles[id];
       return {

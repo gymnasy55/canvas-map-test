@@ -10,6 +10,9 @@ export type PopupProps = {
   position: 'left' | 'right';
 };
 
+const shortenAddress = (address: string, n = 4, k = n) =>
+  address.substring(0, 4) + '...' + address.substring(address.length - k);
+
 export const Popup: React.FC<PopupProps> = (props) => {
   const { x, y, visible, tile, position } = props;
 
@@ -24,7 +27,10 @@ export const Popup: React.FC<PopupProps> = (props) => {
         opacity: visible ? 1 : 0,
       }}
     >
-      {tile.name}
+      <div>
+        x: {tile.x}; y: {tile.y}
+      </div>
+      {tile.owner && <div>Owner: {shortenAddress(tile.owner)}</div>}
     </div>
   );
 };
